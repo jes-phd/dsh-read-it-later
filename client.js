@@ -48,8 +48,42 @@ window.__ModuleLoader__.load({
       throw new Error(result.error?.message ?? '请求失败');
     }
 
+    // 错误文案：RPC 返回的是「ril/xxx: 说明」，直接抛给用户太生硬。
+    // 这里保留原文，但补一句「你该做什么」，并且对常见码换成更短的说法。
+    const ERROR_HINTS = {
+      'ril/no-bot': '还没有绑定机器人：点右边「⚙ 绑定设置」，扫码绑定飞书或微信。',
+      'ril/locked': '高级设置先解锁：点开项目主页点个 Star，回来就能改。',
+      'ril/missing-session': '拿不到会话 ID：刷新一下页面再试。',
+      'ril/collect-failed': '读取会话记录失败：等这一轮说完、或者刷新页面再试。',
+      'ril/no-turns': '这个会话还没有跑完过一轮，先聊一轮再点「预处理发送」。',
+      'ril/no-preset': '没有找到这条预设，可能已被删除。',
+      'ril/bad-request': '请求参数不对，刷新页面再试。',
+    };
+
     function errorText(error) {
-      return String(error?.message ?? error);
+      const raw = String(error?.message ?? error ?? '');
+      const m = /^(ril\/[a-z-]+):\s*([\s\S]*)$/.exec(raw);
+      const code = m ? m[1] : '';
+      const detail = m ? m[2].trim() : raw;
+      const hint = ERROR_HINTS[code];
+      if (!hint) return detail || raw || '未知错误';
+      if (!detail || detail === hint) return hint;
+      return `${hint}（${detail}）`;
+    }
+
+    // 面板展开时轻轻淡入（只注入一次，避免每一轮都塞一个 <style>）。
+    const RIL_STYLE_ID = 'read-it-later-anim';
+    function ensureAnimStyle() {
+      if (typeof document === 'undefined' || !document.head) return;
+      if (document.getElementById(RIL_STYLE_ID)) return;
+      const el = document.createElement('style');
+      el.id = RIL_STYLE_ID;
+      el.textContent = [
+        '@keyframes rilIn{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}',
+        '.ril-panel{animation:rilIn .18s ease-out both}',
+        '@media (prefers-reduced-motion: reduce){.ril-panel{animation:none}}',
+      ].join('\n');
+      document.head.appendChild(el);
     }
 
     // ---------------- 样式 ----------------
@@ -178,6 +212,10 @@ window.__ModuleLoader__.load({
       const [presetNote, setPresetNote] = useState('');
       const [autoWatch, setAutoWatch] = useState(null); // { since, preset }
       const [theme, setTheme] = useState(null);
+
+      useEffect(() => {
+        ensureAnimStyle();
+      }, []);
 
       useEffect(() => {
         let alive = true;
@@ -402,7 +440,7 @@ window.__ModuleLoader__.load({
         note && !open ? h('span', { style: S.ok }, note) : null,
         error && !open ? h('span', { style: S.err }, error) : null,
 
-        open ? h('div', { style: { ...S.panel, flexBasis: '100%', marginLeft: 0 } },
+        open ? h('div', { className: 'ril-panel', style: { ...S.panel, flexBasis: '100%', marginLeft: 0 } },
           h('div', { style: S.line },
             bots.length > 0
               ? h('select', {
