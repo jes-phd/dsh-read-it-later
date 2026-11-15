@@ -93,7 +93,7 @@ npm install --omit=dev
 
 点任意颜色会**自动关掉随机配色**并固定成该颜色；随机配色开着时，当前会话命中的颜色旁边标「← 本会话」。
 
-同一面板右侧是收款二维码（占位图 `assets/donate-qr.png`，由 `assets/donate-qr.svg` 渲染），下方是项目地址占位（`lib/settings.mjs` 的 `GITHUB_URL`，上传后改这里即可）。
+面板底部是项目地址（`lib/settings.mjs` 的 `GITHUB_URL`）。高级设置默认锁着，点开项目主页即解锁。
 
 ## 发送效果
 
@@ -164,6 +164,10 @@ plugin_manager action:set_plugin target:"include:dsh-read-it-later" enabled:true
 ```
 
 改完前端需刷新页面。
+
+## 支持这个项目
+
+如果它替你省下了来回倒腾的时间，去 [GitHub 点个 Star](https://github.com/jes-phd/dsh-read-it-later) 就够了 —— 这也是「高级设置」解锁的方式。
 
 ## 许可证
 
