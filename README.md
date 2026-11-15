@@ -111,6 +111,7 @@ npm install --omit=dev
 
 - **完成一轮就通知**：扫描最近 3 天内活跃的所有会话（每轮最多 25 个，只解「体积变了」的日志），某会话成功收完一轮就发 `✅ 完成一轮 · 标题 / 第 N 轮 · 时间 / 工作区`。
 - **卡住时把选项推给你**：发现「最后一次 turn/end 之后还有没回答的提问 / 没审批的审批」，且已经安静超过 1 分钟，就把问题、最多 8 个选项原文发过去，并附一句怎么回。
+- **在飞书里直接选**：卡住提醒是一张带选项按钮的卡片。点按钮 → 飞书把点击事件发回本机（长连接）→ 插件把选择写回原会话（等价于你在 DSH 里点那个选项），卡片上会弹「已选择：…」的回执。不想点按钮也可以直接**回复数字**（`1` / `2` / `3`）或选项原文，插件会把它对上最近一张还没答完的卡片。
 
 实现：`monitor-scan.py`（只输出结论：这一轮跑完没有、卡在什么上）+ `lib/monitor.mjs`（45 秒一拍，状态存 `~/.dsh/read-it-later/monitor.json`，同一提问 / 同一轮不会重复推；刚打开开关时会补扫一次，不会漏掉早就卡住的会话）。手动触发一次扫描：RPC `monitor.tick`。
 
@@ -142,6 +143,10 @@ Host 注册 `POST /api/read-it-later`，客户端用 `connection.rpc.call('/api'
 | `monitor.status` | 是否在跑、间隔、上次扫描数、两个开关当前值、状态文件位置 |
 | `monitor.tick` | 立刻扫一遍并推送（不等 45 秒的那一拍） |
 
+### 诊断
+
+`debug.controller` → `{ hasController }`：宿主是否暴露了会话控制器（飞书卡片点选要靠它把回答写回会话）。
+
 ### 预处理自动回传
 
 `preset.*` 读写 `~/.dsh/read-it-later/presets.json`（首次使用自动写入 3 条默认预设：① 跨设备离线交接包、② 待办清单、③ 本会话总结 MD）。
@@ -168,7 +173,9 @@ lib/presets.mjs       预处理预存提示词 presets.json 读写（默认 3 �
 share-extract.py      会话日志解帧（多帧 zstd），按 turn/seq 过滤
 monitor-scan.py       会话「跑完没有 / 卡在什么上」的扫描器
 lib/monitor.mjs       状态监控：45 秒一拍、去重、推 IM
-tests/                smoke-bind（绑定）、smoke-client（槽注册）、smoke-rpc（预设+自动回传）、smoke-monitor（扫描器+监控状态）
+lib/asks.mjs          「等待你决定」的提问记录（回填用），asks.json
+lib/feishu-events.mjs 飞书长连接：卡片按钮点击 / 文字回复 → 回填会话选择
+tests/                smoke-bind（绑定）、smoke-client（槽注册）、smoke-rpc（预设+自动回传）、smoke-monitor（扫描器+监控状态）、smoke-answer（文字回复→回填）
 ```
 
 ## 开发

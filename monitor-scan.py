@@ -62,6 +62,8 @@ def main():
     cwd = ''
     turns = 0
     last_turn = 0
+    reply = ''          # 最后一轮的文字答复（给「完成一轮」卡片的隐藏详情用）
+    cur_text = []       # 当前轮累积的 assistant 文本
     last_end_idx = -1
     question_calls = {}   # callId -> {'idx','text','options','title','at'}
     approvals = {}        # id -> {'idx','text','options','at','toolName'}
@@ -79,9 +81,17 @@ def main():
             title = text_of(data.get('title')) or title
         elif kind == 'session':
             cwd = text_of(data.get('cwd')) or cwd
+        elif kind == 'assistant/message':
+            msg = data.get('message') or {}
+            for part in (msg.get('content') or []):
+                if isinstance(part, dict) and part.get('type') == 'text' and part.get('text'):
+                    cur_text.append(part['text'])
         elif kind == 'turn/end':
             turns += 1
             last_end_idx = idx
+            if cur_text:
+                reply = '\n\n'.join(t for t in cur_text if t.strip()).strip()
+                cur_text = []
             if isinstance(data.get('turn'), int):
                 last_turn = data['turn']
         elif kind == 'tool/call' and data.get('name') in ('ask_user_question', 'question'):
@@ -96,6 +106,7 @@ def main():
             first = questions[0] if questions else {}
             options = [o.get('label') for o in (first.get('options') or []) if o.get('label')]
             question_calls[call_id] = {
+                'questionId': first.get('id') or '',
                 'idx': idx,
                 'at': at,
                 'title': first.get('header') or '',
@@ -133,6 +144,7 @@ def main():
         kind, ident, info = candidates[-1]
         pending = {
             'id': ident,
+            'questionId': info.get('questionId') or '',
             'kind': kind,
             'title': info.get('title') or '',
             'text': info.get('text') or '',
@@ -145,6 +157,7 @@ def main():
         'title': title,
         'cwd': cwd,
         'turns': turns,
+        'reply': reply[:8000],
         'lastTurn': last_turn,
         'openTurn': last_end_idx != len(lines) - 1 and turns >= 0 and (
             # 最后一条不是 turn/end，且之后还有记录 → 这一轮还在跑
