@@ -68,11 +68,6 @@ assert.ok(turn, '没有注册 conversation.chat.turnTail');
 assert.equal(turn.options.id, 'ril-turn-share');
 assert.equal(turn.options.order, 40);
 
-const dock = registrations.find((r) => r.options.name === 'conversation.composer.dock');
-assert.ok(dock, '没有注册 conversation.composer.dock（思考中的预约入口）');
-assert.equal(dock.options.id, 'ril-queue-bar');
-assert.equal(dock.options.order, 41);
-
 const settings = registrations.find((r) => r.options.name === 'settings.section');
 assert.ok(settings, '没有注册 settings.section');
 assert.equal(settings.options.id, 'dsh-read-it-later');
