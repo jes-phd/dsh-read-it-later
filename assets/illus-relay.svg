@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" width="720" height="400" role="img" aria-label="会话接力：交接包从这台电脑到那台电脑">
+  <defs>
+    <linearGradient id="c-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7f9ff"/><stop offset="1" stop-color="#fffaf4"/>
+    </linearGradient>
+    <linearGradient id="c-screen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f3f7ff"/>
+    </linearGradient>
+    <filter id="c-shadow" x="-25%" y="-25%" width="150%" height="170%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#2f6df6" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="720" height="400" rx="24" fill="url(#c-bg)"/>
+  <rect x="30" y="312" width="660" height="6" rx="3" fill="#e6ebf5"/>
+
+  <!-- 工位 A -->
+  <g filter="url(#c-shadow)">
+    <rect x="30" y="88" width="206" height="152" rx="14" fill="url(#c-screen)" stroke="#dde5f2"/>
+    <rect x="30" y="88" width="206" height="28" rx="14" fill="#eef3ff"/>
+    <rect x="30" y="104" width="206" height="12" fill="#eef3ff"/>
+    <circle cx="46" cy="102" r="3.5" fill="#c9d6ef"/><circle cx="58" cy="102" r="3.5" fill="#c9d6ef"/>
+    <rect x="48" y="130" width="118" height="10" rx="5" fill="#dfe7f7"/>
+    <rect x="48" y="148" width="160" height="10" rx="5" fill="#dfe7f7"/>
+    <rect x="48" y="166" width="92" height="10" rx="5" fill="#dfe7f7"/>
+    <rect x="48" y="196" width="86" height="24" rx="12" fill="#ffffff" stroke="#dde5f2"/>
+    <text x="91" y="212" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="10" fill="#66809f" text-anchor="middle">▶ 交接包</text>
+  </g>
+  <rect x="120" y="240" width="26" height="52" rx="6" fill="#e6ebf5"/>
+  <rect x="86" y="288" width="94" height="8" rx="4" fill="#e6ebf5"/>
+  <text x="133" y="330" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="11" fill="#93a4bd" text-anchor="middle">工位 A</text>
+
+  <!-- 中间：交接包 -->
+  <g filter="url(#c-shadow)">
+    <rect x="286" y="120" width="148" height="104" rx="16" fill="#ffffff" stroke="#dbe6fb"/>
+    <rect x="286" y="120" width="148" height="6" rx="3" fill="#2f6df6" opacity="0.8"/>
+    <g transform="translate(306 142)">
+      <rect x="0" y="8" width="26" height="26" rx="6" fill="#eef3ff" stroke="#cfdfff"/>
+      <path d="M13 0 v34" stroke="#9db6e6" stroke-width="2" stroke-dasharray="3 3"/>
+      <path d="M7 12 l6 -5 l6 5" fill="none" stroke="#7f9bd1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <text x="344" y="156" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="12" fill="#2b3648">交接包</text>
+    <text x="344" y="172" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="9.5" fill="#8b9ab4">总结 · 记忆 · 文件</text>
+    <rect x="306" y="186" width="108" height="8" rx="4" fill="#e9eef8"/>
+    <rect x="306" y="200" width="76" height="8" rx="4" fill="#e9eef8"/>
+  </g>
+
+  <!-- 箭头 A → 包 → B -->
+  <path d="M242 172 h36" fill="none" stroke="#b9c9e6" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="6 7"/>
+  <path d="M444 172 h36" fill="none" stroke="#b9c9e6" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="6 7"/>
+  <path d="M476 164 l10 8 l-10 8" fill="none" stroke="#8fa6c9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- 工位 B -->
+  <g filter="url(#c-shadow)">
+    <rect x="492" y="88" width="198" height="152" rx="14" fill="url(#c-screen)" stroke="#dde5f2"/>
+    <rect x="492" y="88" width="198" height="28" rx="14" fill="#eef3ff"/>
+    <rect x="492" y="104" width="198" height="12" fill="#eef3ff"/>
+    <circle cx="508" cy="102" r="3.5" fill="#c9d6ef"/><circle cx="520" cy="102" r="3.5" fill="#c9d6ef"/>
+    <rect x="510" y="130" width="104" height="10" rx="5" fill="#dfe7f7"/>
+    <rect x="510" y="148" width="152" height="10" rx="5" fill="#dfe7f7"/>
+    <rect x="510" y="166" width="78" height="10" rx="5" fill="#dfe7f7"/>
+    <rect x="510" y="196" width="96" height="24" rx="12" fill="#e8f0ff" stroke="#c9dbff"/>
+    <text x="558" y="212" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="10" fill="#3f66c9" text-anchor="middle">继续工作 →</text>
+  </g>
+  <rect x="578" y="240" width="26" height="52" rx="6" fill="#e6ebf5"/>
+  <rect x="546" y="288" width="92" height="8" rx="4" fill="#e6ebf5"/>
+  <text x="591" y="330" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="11" fill="#93a4bd" text-anchor="middle">工位 B</text>
+
+  <!-- 也可以直接转发给机器人 -->
+  <path d="M360 224 v22" fill="none" stroke="#dbe4f2" stroke-width="2" stroke-dasharray="3 4"/>
+  <g filter="url(#c-shadow)">
+    <rect x="270" y="248" width="180" height="46" rx="23" fill="#fff8ef" stroke="#f0dfc8"/>
+    <g transform="translate(288 265)">
+      <rect x="0" y="2" width="24" height="20" rx="7" fill="#ffffff" stroke="#e6cfb2"/>
+      <circle cx="8" cy="12" r="2" fill="#3f5470"/><circle cx="16" cy="12" r="2" fill="#3f5470"/>
+      <path d="M12 -6 v-4" stroke="#e0b992" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="12" cy="-12" r="2" fill="#f0a55a"/>
+    </g>
+    <text x="322" y="268" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="10.5" fill="#8a6a45">也可以直接转给机器人</text>
+    <text x="322" y="283" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="9.5" fill="#b39a7c">让它接着往下干</text>
+  </g>
+
+  <text x="360" y="378" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="12" fill="#8b9ab4" text-anchor="middle">换一台电脑，从上一轮的现场接着走</text>
+</svg>

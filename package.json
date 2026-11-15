@@ -1,0 +1,51 @@
+{
+  "name": "dsh-read-it-later",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "把每一轮对话发到飞书/微信：稍后读、预处理后自动发送、跨设备会话接力。",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "feishu",
+    "weixin",
+    "share",
+    "im"
+  ],
+  "main": "index.js",
+  "icon": "./assets/coffee-cup.png",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./icon": "./assets/coffee-cup.png",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-client-connection",
+        "@deepseek-ai/dsh-api-session-controller"
+      ]
+    }
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  },
+  "license": "MIT",
+  "author": "jes-phd",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jes-phd/dsh-read-it-later.git"
+  },
+  "homepage": "https://github.com/jes-phd/dsh-read-it-later#readme",
+  "bugs": {
+    "url": "https://github.com/jes-phd/dsh-read-it-later/issues"
+  }
+}

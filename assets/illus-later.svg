@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" width="720" height="400" role="img" aria-label="稍后读：把这一轮发到手机">
+  <defs>
+    <linearGradient id="a-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7f9ff"/><stop offset="1" stop-color="#fffaf4"/>
+    </linearGradient>
+    <linearGradient id="a-screen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f2f6ff"/>
+    </linearGradient>
+    <filter id="a-shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#2f6df6" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="720" height="400" rx="24" fill="url(#a-bg)"/>
+
+  <!-- 桌面 -->
+  <rect x="40" y="300" width="640" height="6" rx="3" fill="#e6ebf5"/>
+  <rect x="150" y="306" width="10" height="40" rx="4" fill="#e6ebf5"/>
+  <rect x="536" y="306" width="10" height="40" rx="4" fill="#e6ebf5"/>
+
+  <!-- 左侧：DSH 会话窗口 -->
+  <g filter="url(#a-shadow)">
+    <rect x="56" y="96" width="268" height="196" rx="16" fill="url(#a-screen)" stroke="#dde5f2"/>
+    <rect x="56" y="96" width="268" height="34" rx="16" fill="#eef3ff"/>
+    <rect x="56" y="114" width="268" height="16" fill="#eef3ff"/>
+    <circle cx="76" cy="113" r="4" fill="#c9d6ef"/>
+    <circle cx="90" cy="113" r="4" fill="#c9d6ef"/>
+    <circle cx="104" cy="113" r="4" fill="#c9d6ef"/>
+    <rect x="122" y="106" width="90" height="14" rx="7" fill="#ffffff" stroke="#dde5f2"/>
+
+    <!-- 对话气泡 -->
+    <rect x="76" y="146" width="150" height="12" rx="6" fill="#dfe7f7"/>
+    <rect x="76" y="166" width="196" height="12" rx="6" fill="#dfe7f7"/>
+    <rect x="76" y="186" width="120" height="12" rx="6" fill="#dfe7f7"/>
+
+    <rect x="76" y="212" width="112" height="22" rx="11" fill="#e8f0ff" stroke="#c9dbff"/>
+    <text x="132" y="227" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="11" fill="#3f66c9" text-anchor="middle">第 3 轮</text>
+
+    <rect x="76" y="244" width="88" height="24" rx="12" fill="#ffffff" stroke="#dde5f2"/>
+    <path d="M88 256 l8 0 a5 5 0 0 1 0 10 l-3 0" fill="none" stroke="#8fa6c9" stroke-width="1.6" stroke-linecap="round"/>
+    <text x="104" y="261" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="10" fill="#66809f">3 个文件</text>
+
+    <!-- 发送按钮 -->
+    <g>
+      <rect x="196" y="240" width="108" height="28" rx="14" fill="#2f6df6"/>
+      <text x="250" y="259" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="12" fill="#ffffff" text-anchor="middle">发至IM</text>
+    </g>
+  </g>
+
+  <!-- 中间：动线 -->
+  <path d="M336 194 C 380 194, 392 176, 430 176" fill="none" stroke="#b9c9e6" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 8"/>
+  <path d="M424 168 l12 8 l-12 8" fill="none" stroke="#b9c9e6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- 咖啡杯 -->
+  <g transform="translate(348 236)">
+    <path d="M2 8 h44 v22 a14 14 0 0 1 -14 14 h-16 a14 14 0 0 1 -14 -14 z" fill="#fff3e4" stroke="#e8c9a6"/>
+    <path d="M46 14 h6 a8 8 0 0 1 0 16 h-6" fill="none" stroke="#e8c9a6" stroke-width="3"/>
+    <path d="M14 2 q4 -8 0 -14 M26 2 q4 -8 0 -14" fill="none" stroke="#e0b992" stroke-width="2.4" stroke-linecap="round"/>
+  </g>
+
+  <!-- 右侧：手机 + 卡片 -->
+  <g filter="url(#a-shadow)">
+    <rect x="470" y="64" width="176" height="252" rx="26" fill="#ffffff" stroke="#dde5f2"/>
+    <rect x="470" y="64" width="176" height="252" rx="26" fill="none" stroke="#eef3ff" stroke-width="6"/>
+    <rect x="536" y="76" width="44" height="6" rx="3" fill="#e9eef8"/>
+
+    <!-- 卡片 -->
+    <rect x="486" y="98" width="144" height="182" rx="14" fill="#fbfdff" stroke="#e3ebf8"/>
+    <rect x="486" y="98" width="144" height="8" rx="4" fill="#2f6df6" opacity="0.85"/>
+    <text x="498" y="130" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="11" fill="#2b3648">今天这一轮</text>
+    <rect x="498" y="140" width="96" height="8" rx="4" fill="#e3ebf8"/>
+    <rect x="498" y="154" width="118" height="8" rx="4" fill="#e3ebf8"/>
+    <rect x="498" y="168" width="80" height="8" rx="4" fill="#e3ebf8"/>
+    <rect x="498" y="188" width="118" height="1" fill="#e9eef8"/>
+    <rect x="498" y="200" width="64" height="8" rx="4" fill="#dfe7f7"/>
+    <rect x="498" y="214" width="100" height="8" rx="4" fill="#dfe7f7"/>
+    <rect x="498" y="236" width="74" height="20" rx="10" fill="#eef3ff" stroke="#d5e3ff"/>
+    <text x="535" y="250" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="10" fill="#3f66c9" text-anchor="middle">附件 zip</text>
+  </g>
+
+  <!-- 车厢窗 -->
+  <g opacity="0.55">
+    <rect x="596" y="330" width="84" height="8" rx="4" fill="#e6ebf5"/>
+    <path d="M600 330 q22 -26 44 0 q22 -26 44 0" fill="none" stroke="#cfdaea" stroke-width="2"/>
+  </g>
+
+  <text x="360" y="382" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="12" fill="#8b9ab4" text-anchor="middle">起身就走，内容已经在手机上等你</text>
+</svg>

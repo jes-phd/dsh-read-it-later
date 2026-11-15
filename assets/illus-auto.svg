@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" width="720" height="400" role="img" aria-label="预处理后自动发送：发出最后一条指令就离开">
+  <defs>
+    <linearGradient id="b-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6f9ff"/><stop offset="1" stop-color="#fffaf3"/>
+    </linearGradient>
+    <linearGradient id="b-line" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b9c9e6"/><stop offset="1" stop-color="#2f6df6" stop-opacity="0.65"/>
+    </linearGradient>
+    <filter id="b-shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#2f6df6" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="720" height="400" rx="24" fill="url(#b-bg)"/>
+
+  <!-- 地面 -->
+  <rect x="40" y="316" width="640" height="6" rx="3" fill="#e6ebf5"/>
+
+  <!-- 左侧：预处理面板 -->
+  <g filter="url(#b-shadow)">
+    <rect x="48" y="84" width="286" height="212" rx="16" fill="#ffffff" stroke="#dde5f2"/>
+    <rect x="48" y="84" width="286" height="34" rx="16" fill="#eef3ff"/>
+    <rect x="48" y="102" width="286" height="16" fill="#eef3ff"/>
+    <circle cx="68" cy="101" r="4" fill="#c9d6ef"/><circle cx="82" cy="101" r="4" fill="#c9d6ef"/>
+    <text x="100" y="106" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="11" fill="#5b76a0">预处理发送</text>
+
+    <!-- 预设卡 1（选中） -->
+    <rect x="66" y="132" width="250" height="54" rx="12" fill="#eef4ff" stroke="#cfdfff"/>
+    <circle cx="88" cy="159" r="12" fill="#2f6df6"/>
+    <path d="M84 153 l9 6 l-9 6 z" fill="#ffffff"/>
+    <text x="110" y="155" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="12" fill="#25406e">总结这一轮</text>
+    <text x="110" y="172" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="10" fill="#7f95b5">完成后自动发到手机</text>
+
+    <!-- 预设卡 2 -->
+    <rect x="66" y="196" width="250" height="44" rx="12" fill="#fbfdff" stroke="#e6ecf7"/>
+    <circle cx="88" cy="218" r="10" fill="#eef3ff" stroke="#d5e3ff"/>
+    <path d="M84 214 l7 4 l-7 4 z" fill="#7f9bd1"/>
+    <text x="110" y="223" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="12" fill="#6d83a3">把记忆打包成 zip</text>
+
+    <text x="66" y="264" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="10" fill="#93a4bd">点▶ 发出最后一条指令，就可以走了</text>
+  </g>
+
+  <!-- 弧线：从这里飞向手机 -->
+  <path d="M300 150 C 372 120, 430 96, 500 104" fill="none" stroke="url(#b-line)" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="7 9"/>
+  <path d="M492 96 l12 8 l-11 9" fill="none" stroke="#5f8bdd" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- 离开的人（灰色剪影） -->
+  <g transform="translate(352 240)" stroke="#c6d2e6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <circle cx="18" cy="6" r="10" fill="#c6d2e6" stroke="none"/>
+    <path d="M18 18 v28" stroke-width="17"/>
+    <path d="M18 46 l-9 24" stroke-width="10"/>
+    <path d="M18 46 l11 23" stroke-width="10"/>
+    <path d="M18 24 l-11 15" stroke-width="8"/>
+    <path d="M18 24 l12 14" stroke-width="8"/>
+    <rect x="34" y="34" width="15" height="17" rx="4" fill="#c6d2e6" stroke="none"/>
+    <rect x="37" y="27" width="9" height="6" rx="3" fill="#c6d2e6" stroke="none"/>
+  </g>
+  <path d="M318 300 q-16 -5 -30 2" fill="none" stroke="#dfe6f2" stroke-width="3" stroke-linecap="round"/>
+  <path d="M318 312 q-20 -6 -36 3" fill="none" stroke="#e8eef8" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- 右侧：手机收到通知 -->
+  <g filter="url(#b-shadow)">
+    <rect x="500" y="52" width="168" height="264" rx="26" fill="#ffffff" stroke="#dde5f2"/>
+    <rect x="500" y="52" width="168" height="264" rx="26" fill="none" stroke="#eef3ff" stroke-width="6"/>
+    <rect x="562" y="64" width="44" height="6" rx="3" fill="#e9eef8"/>
+
+    <!-- 通知卡 -->
+    <rect x="516" y="86" width="136" height="120" rx="14" fill="#fbfdff" stroke="#e3ebf8"/>
+    <circle cx="536" cy="108" r="12" fill="#e8f4ec" stroke="#bfe3cb"/>
+    <path d="M530 108 l4 5 l8 -9" fill="none" stroke="#38a163" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="556" y="105" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="11" fill="#2b3648">已发送</text>
+    <text x="556" y="120" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="9" fill="#8b9ab4">第 3 轮 · 刚刚</text>
+    <rect x="530" y="136" width="104" height="8" rx="4" fill="#e3ebf8"/>
+    <rect x="530" y="152" width="84" height="8" rx="4" fill="#e3ebf8"/>
+    <rect x="530" y="176" width="64" height="18" rx="9" fill="#eef3ff" stroke="#d5e3ff"/>
+    <text x="562" y="189" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="9" fill="#3f66c9" text-anchor="middle">zip + 卡片</text>
+
+    <!-- 第二张小卡 -->
+    <rect x="516" y="220" width="136" height="74" rx="14" fill="#fffaf3" stroke="#f2e2cd"/>
+    <rect x="530" y="236" width="88" height="8" rx="4" fill="#f0e0c9"/>
+    <rect x="530" y="252" width="64" height="8" rx="4" fill="#f0e0c9"/>
+    <rect x="530" y="270" width="46" height="14" rx="7" fill="#f7ecda"/>
+  </g>
+
+  <text x="360" y="382" font-family="'Microsoft YaHei', system-ui, sans-serif" font-size="12" fill="#8b9ab4" text-anchor="middle">发出最后一条指令，剩下的它替你做</text>
+</svg>
