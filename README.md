@@ -21,6 +21,13 @@
 点 ▶ 把提示词送进会话，然后就可以走了 —— 它跑完，插件自动把这一轮的结果和附件发到 IM。
 **发出最后一条指令，就是离开的时刻。**
 
+## 思考中也能先点
+
+一轮还没答完（DSH 正在思考）时，输入框上方会出现同一套样式的一行：`Read it later ——— 📤 本轮结束后发送`。
+点开勾好「提示词 / 回复 / 附件」后按「本轮结束后发送」，插件会先在 Host 记下这次预约（落盘，重启也不丢），**这一轮回答一结束就立刻发过去**，你不用守在屏幕前等它跑完。
+
+回答结束后，这一行自动消失，改由每条回答下面的 `发至IM` 按钮接管——两处入口发出去的内容完全一样。
+
 ## 三、会话接力
 
 换一台电脑继续，不必从零解释前情。
@@ -78,6 +85,8 @@ npm install --omit=dev
 | 随机配色 `randomTheme` | ✅ 开 | 按**会话标题**做 FNV-1a 散列取色：同一会话颜色固定，不同会话尽量不同色（飞书里一眼区分） | 用下面手动选的固定配色 |
 | 解锁 `unlocked` | ❌ 关 | 点开项目主页后置为 `true`，高级设置可改 | — |
 | 等待上限 `autoTimeoutMin` | 20 分钟 | 预处理发送后最多等这么久（1–180 可调）；超时会明确提示「等待结果超时，可以再点一次」，不会无限挂着 | — |
+| 完成一轮就通知 `monitorTurns` | ❌ 关 | 盯着**所有** DSH 会话，任何一轮跑完就给默认机器人发一条「✅ 完成一轮 · 会话标题」的短消息（带第几轮、时间、工作区） | 不通知 |
+| 卡住时推选项 `monitorAsk` | ❌ 关 | 会话停在「等你决定」（提问 / 审批）超过 1 分钟，就把**问题和选项**发到默认机器人，提示你尽快回去选 | 不推送 |
 
 | id | 名称 | 主色 | 飞书卡片 template |
 | --- | --- | --- | --- |
@@ -95,6 +104,15 @@ npm install --omit=dev
 点任意颜色会**自动关掉随机配色**并固定成该颜色；随机配色开着时，当前会话命中的颜色旁边标「← 本会话」。
 
 面板底部是项目地址（`lib/settings.mjs` 的 `GITHUB_URL`）。高级设置默认锁着，点开项目主页即解锁。
+
+## 状态监控（可选）
+
+「⚙ 绑定设置 → 高级设置」里的「状态监控」两个开关，都推到**默认机器人**：
+
+- **完成一轮就通知**：扫描最近 3 天内活跃的所有会话（每轮最多 25 个，只解「体积变了」的日志），某会话成功收完一轮就发 `✅ 完成一轮 · 标题 / 第 N 轮 · 时间 / 工作区`。
+- **卡住时把选项推给你**：发现「最后一次 turn/end 之后还有没回答的提问 / 没审批的审批」，且已经安静超过 1 分钟，就把问题、最多 8 个选项原文发过去，并附一句怎么回。
+
+实现：`monitor-scan.py`（只输出结论：这一轮跑完没有、卡在什么上）+ `lib/monitor.mjs`（45 秒一拍，状态存 `~/.dsh/read-it-later/monitor.json`，同一提问 / 同一轮不会重复推；刚打开开关时会补扫一次，不会漏掉早就卡住的会话）。手动触发一次扫描：RPC `monitor.tick`。
 
 ## 发送效果
 
@@ -116,6 +134,13 @@ Host 注册 `POST /api/read-it-later`，客户端用 `connection.rpc.call('/api'
 ```
 
 方法：`status`、`bind.begin`、`bind.poll`、`bind.verify`、`bind.cancel`、`bind.manual`、`bot.remove`、`bot.rename`、`bot.test`、`share.preview`、`share.send`、`preset.list`、`preset.save`、`preset.delete`、`auto.arm`、`auto.status`、`auto.cancel`、`settings.get`（可带 `{sessionId}` 拿该会话的实际配色）、`settings.set`（`themeId` / `randomTheme` / `summarize` / `zip` 部分更新）。
+
+### 状态监控
+
+| method | 说明 |
+| --- | --- |
+| `monitor.status` | 是否在跑、间隔、上次扫描数、两个开关当前值、状态文件位置 |
+| `monitor.tick` | 立刻扫一遍并推送（不等 45 秒的那一拍） |
 
 ### 预处理自动回传
 
@@ -141,7 +166,9 @@ lib/bind.mjs          扫码绑定编排（后台轮询、配对码、写库）
 lib/store.mjs         bots.json 读写
 lib/presets.mjs       预处理预存提示词 presets.json 读写（默认 3 条）
 share-extract.py      会话日志解帧（多帧 zstd），按 turn/seq 过滤
-tests/                smoke-bind（绑定）、smoke-client（槽注册）、smoke-rpc（预设+自动回传）
+monitor-scan.py       会话「跑完没有 / 卡在什么上」的扫描器
+lib/monitor.mjs       状态监控：45 秒一拍、去重、推 IM
+tests/                smoke-bind（绑定）、smoke-client（槽注册）、smoke-rpc（预设+自动回传）、smoke-monitor（扫描器+监控状态）
 ```
 
 ## 开发
@@ -152,6 +179,7 @@ node tests/smoke-client.mjs     # 槽注册与组件可渲染
 node tests/smoke-rpc.mjs        # RPC / 预设 / 自动回传
 node tests/smoke-auto.mjs       # 自动回传的基线必须取到日志轮次（regression）
 node tests/smoke-restore.mjs    # 重启后把没等完的自动回传接回来（过期标 timeout）
+node tests/smoke-monitor.mjs    # 状态监控：卡住的提问能被识别并带选项，回答后不再报卡住
 node tests/smoke-bind.mjs       # 真实网络：生成飞书/微信二维码 + 错误路径
 ```
 

@@ -45,7 +45,12 @@ const ctx = {
   connection: { rpc: { call: async () => ({ ok: true, value: {} }) } },
   slots: {
     inject(name, factory) {
-      assert.ok(name === 'conversation.chat.turnTail' || name === 'settings.section', `未知槽 ${name}`);
+      assert.ok(
+        name === 'conversation.chat.turnTail'
+        || name === 'conversation.composer.dock'
+        || name === 'settings.section',
+        `未知槽 ${name}`,
+      );
       return factory();
     },
     register(options, Component) {
@@ -62,6 +67,11 @@ const turn = registrations.find((r) => r.options.name === 'conversation.chat.tur
 assert.ok(turn, '没有注册 conversation.chat.turnTail');
 assert.equal(turn.options.id, 'ril-turn-share');
 assert.equal(turn.options.order, 40);
+
+const dock = registrations.find((r) => r.options.name === 'conversation.composer.dock');
+assert.ok(dock, '没有注册 conversation.composer.dock（思考中的预约入口）');
+assert.equal(dock.options.id, 'ril-queue-bar');
+assert.equal(dock.options.order, 41);
 
 const settings = registrations.find((r) => r.options.name === 'settings.section');
 assert.ok(settings, '没有注册 settings.section');

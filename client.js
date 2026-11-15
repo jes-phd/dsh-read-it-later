@@ -556,6 +556,8 @@ window.__ModuleLoader__.load({
       const [summarize, setSummarize] = useState(true);
       const [zipFiles, setZipFiles] = useState(true);
       const [autoTimeoutMin, setAutoTimeoutMin] = useState(20);
+      const [monitorTurns, setMonitorTurns] = useState(false);
+      const [monitorAsk, setMonitorAsk] = useState(false);
       const [github, setGithub] = useState('');
       const [unlocked, setUnlocked] = useState(false);
 
@@ -589,6 +591,8 @@ window.__ModuleLoader__.load({
           setSummarize(value.summarize !== false);
           setZipFiles(value.zip !== false);
           setAutoTimeoutMin(Number.isFinite(value.autoTimeoutMin) ? value.autoTimeoutMin : 20);
+          setMonitorTurns(value.monitorTurns === true);
+          setMonitorAsk(value.monitorAsk === true);
           setGithub(value.github ?? '');
           setUnlocked(value.unlocked === true);
         } catch {}
@@ -610,6 +614,8 @@ window.__ModuleLoader__.load({
           setSummarize(value.summarize !== false);
           setZipFiles(value.zip !== false);
           setAutoTimeoutMin(Number.isFinite(value.autoTimeoutMin) ? value.autoTimeoutMin : 20);
+          setMonitorTurns(value.monitorTurns === true);
+          setMonitorAsk(value.monitorAsk === true);
           setUnlocked(value.unlocked === true);
           bump();
         } catch (e) {
@@ -877,7 +883,11 @@ window.__ModuleLoader__.load({
                     if (event.key === 'Enter') applySettings({ autoTimeoutMin });
                   },
                 }),
-                h('span', { style: S.muted }, '分钟（1–180，默认 20；插件重启后仍在窗口内会接着等）'))),
+                h('span', { style: S.muted }, '分钟（1–180，默认 20；插件重启后仍在窗口内会接着等）')),
+              h('div', { style: { marginTop: 6, paddingTop: 8, borderTop: '1px solid var(--dsh-border, #ededed)' } },
+                h('div', { style: { ...S.muted, fontWeight: 600, marginBottom: 4 } }, '状态监控（盯所有 DSH 会话，推到默认机器人）'),
+                check('完成一轮就通知', monitorTurns, (v) => applySettings({ monitorTurns: v }), '任何会话成功跑完一轮，就给 IM 发一条简短消息（哪一轮、什么时间）'),
+                check('卡住时把选项推给你', monitorAsk, (v) => applySettings({ monitorAsk: v }), '会话停在「等你决定」（提问 / 审批）超过 1 分钟，就把问题和选项发到 IM，提示你尽快抉择'))),
               h('div', { style: S.muted }, randomTheme ? '配色：随机（每个会话按标题取色）' : '配色：固定（点下面的颜色切换）'),
               h('div', { style: { display: 'flex', gap: 8, flexWrap: 'wrap' } },
                 themes.map((t) => h('button', {
@@ -908,6 +918,138 @@ window.__ModuleLoader__.load({
               : '（待填）') : null) );
     }
 
+
+    // ---------------- 思考中就出现：本轮结束后自动发送 ----------------
+    // 每轮结束后的按钮由 conversation.chat.turnTail 提供；但「正在思考」这一轮
+    // 还没落到 turnTail 里，所以在输入框上方（composer dock）补一个同样长相的入口：
+    // 点它 → 立刻让 Host 记住「等这一轮结束就发」，回答一出来就自动推给机器人。
+    function QueueBar(props) {
+      const { call, appCtx } = props;
+      const rootRef = useRef(null);
+      const [running, setRunning] = useState(false);
+      const [open, setOpen] = useState(false);
+      const [busy, setBusy] = useState(false);
+      const [bots, setBots] = useState([]);
+      const [botId, setBotId] = useState('');
+      const [include, setInclude] = useState({ prompts: true, answers: true, files: true });
+      const [note, setNote] = useState('');
+      const [error, setError] = useState('');
+
+      const sessionId = useCallback(() => {
+        const el = rootRef.current?.closest?.('[data-conversation-session]');
+        return el?.getAttribute?.('data-conversation-session') ?? '';
+      }, []);
+
+      // 1.5 秒看一眼本会话是否在跑（在跑 = 这一轮还没结束）。
+      useEffect(() => {
+        let alive = true;
+        const tick = () => {
+          try {
+            const sessions = appCtx?.get ? appCtx.get('sessions') : appCtx?.sessions;
+            const session = sessions?.binding?.(sessionId())?.session;
+            const next = Boolean(session?.getSnapshot?.()?.running);
+            if (alive) setRunning((prev) => (prev === next ? prev : next));
+          } catch {
+            if (alive) setRunning(false);
+          }
+        };
+        tick();
+        const timer = setInterval(tick, 1500);
+        return () => {
+          alive = false;
+          clearInterval(timer);
+        };
+      }, [appCtx, sessionId]);
+
+      // 跑完这一轮后收起面板：之后的发送交给 turnTail 的按钮。
+      useEffect(() => {
+        if (!running) {
+          setOpen(false);
+          setNote('');
+        }
+      }, [running]);
+
+      useEffect(() => {
+        if (!open) return;
+        (async () => {
+          try {
+            const value = unwrap(await call('status'));
+            setBots(value.bots ?? []);
+            setBotId((prev) => prev || value.defaultBotId || value.bots?.[0]?.id || '');
+          } catch (e) {
+            setError(errorText(e));
+          }
+        })();
+      }, [open, call]);
+
+      async function armNow() {
+        setBusy(true);
+        setError('');
+        try {
+          const value = unwrap(await call('auto.arm', { botId, sessionId: sessionId(), include, fromRunning: true }));
+          const bot = (bots.find((b) => b.id === botId) || {}).name || '机器人';
+          setNote(`已预约：这一轮结束就发到「${bot}」，不用等在这里。`);
+          setOpen(false);
+          void value;
+        } catch (e) {
+          setError(errorText(e));
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      if (!running && !note) return null;
+
+      const chip = (key, label) => h('button', {
+        key,
+        type: 'button',
+        title: `勾选后会把「${label}」一起发过去`,
+        style: { ...S.chip, ...(include[key] ? S.chipOn : null) },
+        onClick: () => setInclude((prev) => ({ ...prev, [key]: !prev[key] })),
+      }, `${include[key] ? '✓' : '○'} ${label}`);
+
+      return h('div', { ref: rootRef, style: S.barTail },
+        h('span', { style: S.legend }, 'Read it later'),
+        h('span', { style: S.rule }),
+        note ? h('span', { style: S.ok }, note) : null,
+        error && !open ? h('span', { style: S.err }, error) : null,
+        h('button', {
+          type: 'button',
+          style: running ? S.button : { ...S.button, opacity: 0.6 },
+          title: running ? '点开选择要发送的内容，本轮回答一结束就发出' : '',
+          onClick: () => setOpen((v) => !v),
+          disabled: !running,
+        }, open ? '收起' : '📤 本轮结束后发送'),
+        open ? h('div', { className: 'ril-panel', style: { ...S.panel, flexBasis: '100%', marginLeft: 0 } },
+          h('div', { style: S.line },
+            bots.length > 0
+              ? h('select', {
+                style: S.select,
+                value: botId,
+                onChange: (event) => setBotId(event.target.value),
+              }, bots.map((bot) => h('option', { key: bot.id, value: bot.id },
+                `${platformLabel(bot.platform)} · ${bot.name || bot.detail || bot.id}`)))
+              : h('span', { style: S.err }, '还没有绑定机器人，点右边「⚙ 绑定设置」。'),
+            h('div', { style: S.midGroup },
+              chip('prompts', '提示词'),
+              chip('answers', '回复'),
+              chip('files', '附件'),
+              h('button', {
+                type: 'button',
+                style: { ...S.buttonPrimary, opacity: (!bots.length || busy) ? 0.5 : 1 },
+                disabled: !bots.length || busy,
+                onClick: armNow,
+              }, busy ? '预约中…' : '本轮结束后发送')),
+            h('button', {
+              type: 'button',
+              style: { ...S.buttonGhost, marginLeft: 'auto' },
+              title: '绑定机器人 / 高级设置',
+              onClick: () => setOpen(false),
+            }, '收起')),
+          error ? h('div', { style: S.err }, error) : null,
+          h('div', { style: S.foot }, '这一轮还在跑。点「本轮结束后发送」，回答一结束就自动发过去，不用守着。')) : null);
+    }
+
     return {
       inject: ['slots', 'connection', 'sessions'],
       apply(ctx) {
@@ -919,6 +1061,12 @@ window.__ModuleLoader__.load({
           id: 'ril-turn-share',
           order: 40,
         }, (props) => h(ShareTurn, { ...props, call, appCtx: ctx }))));
+
+        disposers.push(ctx.slots.inject('conversation.composer.dock', () => ctx.slots.register({
+          name: 'conversation.composer.dock',
+          id: 'ril-queue-bar',
+          order: 41,
+        }, (props) => h(QueueBar, { ...props, call, appCtx: ctx }))));
 
         disposers.push(ctx.slots.inject('settings.section', () => ctx.slots.register({
           name: 'settings.section',

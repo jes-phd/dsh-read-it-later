@@ -1,5 +1,6 @@
 // Host 侧入口：注册 /api/read-it-later RPC（绑定 + 发送），UI 在 client.js。
 import { mountRpc, restoreArms } from './lib/rpc.mjs';
+import { startMonitor } from './lib/monitor.mjs';
 
 // 必须声明 connection 依赖，才能访问 ctx.connection.fetch.register。
 export const inject = ['connection'];
@@ -10,4 +11,6 @@ export function apply(ctx) {
   void restoreArms(ctx).catch((error) => {
     console.warn('[read-it-later] restoreArms failed:', error?.message ?? error);
   });
+  // 状态监控：盯所有会话的「完成一轮 / 卡在需要决定」，按设置往默认机器人推。
+  startMonitor();
 }
