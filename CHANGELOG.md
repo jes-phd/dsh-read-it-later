@@ -4,7 +4,7 @@
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
 ## [Unreleased]
-- **飞书卡片里直接选**：卡住提醒的选项按钮通过长连接把点击送回本机，并写回原会话；也支持直接回复 `1`/`2`/`3` 或选项原文。新增 `lib/asks.mjs`（提问记录）与 `lib/feishu-events.mjs`（长连接），依赖 `@larksuiteoapi/node-sdk`。
+- **在飞书里直接选**：卡住提醒卡片按 `1 / 2 / 3` 列出选项，直接回复数字（或选项原文）即可把选择写回原会话；改用纯文字回复做主通道（不依赖卡片回调，最可靠）。新增 `lib/asks.mjs`（提问记录）与 `lib/feishu-events.mjs`（长连接），依赖 `@larksuiteoapi/node-sdk`。
 - **回填链路修复**：`sessionController.prompt` 必须带上 `AbortSignal`（否则报 `throwIfAborted`）；插件重载时先关掉旧长连接，避免点击被跑老代码的连接接走；`events.log` 记录长连接与回填事件，便于排查。
 
 ### 新增
