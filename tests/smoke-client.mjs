@@ -45,7 +45,12 @@ const ctx = {
   connection: { rpc: { call: async () => ({ ok: true, value: {} }) } },
   slots: {
     inject(name, factory) {
-      assert.ok(name === 'conversation.chat.turnTail' || name === 'settings.section', `未知槽 ${name}`);
+      assert.ok(
+        name === 'conversation.chat.turnTail'
+        || name === 'conversation.composer.dock'
+        || name === 'settings.section',
+        `未知槽 ${name}`,
+      );
       return factory();
     },
     register(options, Component) {

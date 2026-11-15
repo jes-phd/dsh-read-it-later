@@ -1,9 +1,9 @@
 # dsh-read-it-later
 
-> 超好用，dsh里的稍后读插件，离开dsh时会话的所有信息一键发送到你的手机、公司电脑、家里电脑，探索和阅读接力不断档。
+> 把每一轮对话，变成你换设备时能接着读、接着干的东西。
 
-在会话的**每一轮结尾**点一下，就能把这一轮的**提示词、回复、附件**发到你自己绑定的飞书或微信机器人。
-它不为协作，只为**你自己**：起身、通勤、上厕所、换台电脑，内容已经在那儿了。
+在会话的**每一轮结尾**点一下，就能把这一轮的**提示词、回复、附件**发到你自己绑定的机器人 —— 飞书、微信、Telegram、Discord、钉钉都行。
+它不为协作，只为**你自己**：起身、通勤、换台电脑，内容已经在那儿了。
 
 ![稍后读：把这一轮发到手机](assets/illus-later.png)
 
@@ -61,14 +61,26 @@ npm install --omit=dev
 ### 微信
 用微信扫码（腾讯 iLink 机器人接口 `ilink/bot/get_bot_qrcode`），确认后拿到 `bot_token` + 扫码者 `ilink_user_id`，之后主动给扫码者本人发消息，**不需要先收到他的消息**。若手机提示配对码，在设置页输入即可。
 
+### Telegram / Discord / 钉钉
+这三个不需要扫码，在「手动绑定」里填凭据即可：
+
+| 平台 | 需要填 | 说明 |
+|---|---|---|
+| Telegram | Bot Token（@BotFather） | Chat ID 留空时，先在 Telegram 里给机器人随便发一句，再点「保存并验证」就会自动读到会话 |
+| Discord | Bot Token + 频道 ID | 右键频道 → 复制频道 ID；机器人需要在该频道有发消息权限 |
+| 钉钉群机器人 | Webhook 地址（可选加签密钥） | 只能发文本，附件会以文件名清单写进正文 |
+
+多个机器人时，绑定列表里点「设为默认」，发送面板默认选它。
+
 ### 凭据存放
 `~/.dsh/read-it-later/bots.json`（0600，写入用临时文件 + rename）。RPC 只返回脱敏后的机器人信息（不含 appSecret / token）。
 
 ## 设置
 
-「⚙ 绑定设置」面板最下面的「高级设置」：三个开关 + 10 套配色。
+「⚙ 绑定设置」面板最下面的「高级设置」：三个开关 + 等待上限 + 状态监控两个开关 + 10 套配色（配色色块与项目地址同一行）。
 
 高级设置默认**锁着**（灰色、不可改）：点开项目主页点个 Star，回到面板就自动解锁。
+**状态监控两个开关默认都是关的**，也要解锁之后才能打开。
 全部写在 `~/.dsh/read-it-later/settings.json`：
 
 | 设置项 | 默认 | 勾选 | 不勾选 |
@@ -77,6 +89,9 @@ npm install --omit=dev
 | 压缩附件 `zip` | ✅ 开 | 所有附件打成一个 `<会话标题>第 N 轮.zip` | 像早期版本一样每个文件单独发 |
 | 随机配色 `randomTheme` | ✅ 开 | 按**会话标题**做 FNV-1a 散列取色：同一会话颜色固定，不同会话尽量不同色（飞书里一眼区分） | 用下面手动选的固定配色 |
 | 解锁 `unlocked` | ❌ 关 | 点开项目主页后置为 `true`，高级设置可改 | — |
+| 等待上限 `autoTimeoutMin` | 20 分钟 | 预处理发送后最多等这么久（1–180 可调）；超时会明确提示「等待结果超时，可以再点一次」，不会无限挂着 | — |
+| 完成一轮就通知 `monitorTurns` | ❌ 关（需解锁） | 盯着**所有** DSH 会话，任何一轮跑完就给默认机器人发一条「✅ 完成一轮 · 会话标题」的短消息（带第几轮、时间、工作区） | 不通知 |
+| 卡住时推选项 `monitorAsk` | ❌ 关（需解锁） | 会话停在「等你决定」（提问 / 审批）超过 1 分钟，就把**问题和选项**发到默认机器人，提示你尽快回去选 | 不推送 |
 
 | id | 名称 | 主色 | 飞书卡片 template |
 | --- | --- | --- | --- |
@@ -94,6 +109,16 @@ npm install --omit=dev
 点任意颜色会**自动关掉随机配色**并固定成该颜色；随机配色开着时，当前会话命中的颜色旁边标「← 本会话」。
 
 面板底部是项目地址（`lib/settings.mjs` 的 `GITHUB_URL`）。高级设置默认锁着，点开项目主页即解锁。
+
+## 状态监控（可选）
+
+「⚙ 绑定设置 → 高级设置」里的「状态监控」两个开关，都推到**默认机器人**：
+
+- **完成一轮就通知**：扫描最近 3 天内活跃的所有会话（每轮最多 25 个，只解「体积变了」的日志），某会话成功收完一轮就发 `✅ 完成一轮 · 标题 / 第 N 轮 · 时间 / 工作区`。
+- **卡住时把选项推给你**：发现「最后一次 turn/end 之后还有没回答的提问 / 没审批的审批」，且已经安静超过 1 分钟，就把问题、最多 8 个选项原文发过去，并附一句怎么回。
+- **在飞书里直接选**：卡住提醒卡片里把选项按 `1 / 2 / 3` 列出来，**直接回复数字**（或选项原文）即可，插件会对上最近一张还没答完的卡片并把选择写回原会话，选完会回你一条「已回填到会话：X」。
+
+实现：`monitor-scan.py`（只输出结论：这一轮跑完没有、卡在什么上）+ `lib/monitor.mjs`（45 秒一拍，状态存 `~/.dsh/read-it-later/monitor.json`，同一提问 / 同一轮不会重复推；刚打开开关时会补扫一次，不会漏掉早就卡住的会话）。手动触发一次扫描：RPC `monitor.tick`。
 
 ## 发送效果
 
@@ -115,6 +140,17 @@ Host 注册 `POST /api/read-it-later`，客户端用 `connection.rpc.call('/api'
 ```
 
 方法：`status`、`bind.begin`、`bind.poll`、`bind.verify`、`bind.cancel`、`bind.manual`、`bot.remove`、`bot.rename`、`bot.test`、`share.preview`、`share.send`、`preset.list`、`preset.save`、`preset.delete`、`auto.arm`、`auto.status`、`auto.cancel`、`settings.get`（可带 `{sessionId}` 拿该会话的实际配色）、`settings.set`（`themeId` / `randomTheme` / `summarize` / `zip` 部分更新）。
+
+### 状态监控
+
+| method | 说明 |
+| --- | --- |
+| `monitor.status` | 是否在跑、间隔、上次扫描数、两个开关当前值、状态文件位置 |
+| `monitor.tick` | 立刻扫一遍并推送（不等 45 秒的那一拍） |
+
+### 诊断
+
+`debug.controller` → `{ hasController }`：宿主是否暴露了会话控制器（飞书卡片点选要靠它把回答写回会话）。
 
 ### 预处理自动回传
 
@@ -140,7 +176,11 @@ lib/bind.mjs          扫码绑定编排（后台轮询、配对码、写库）
 lib/store.mjs         bots.json 读写
 lib/presets.mjs       预处理预存提示词 presets.json 读写（默认 3 条）
 share-extract.py      会话日志解帧（多帧 zstd），按 turn/seq 过滤
-tests/                smoke-bind（绑定）、smoke-client（槽注册）、smoke-rpc（预设+自动回传）
+monitor-scan.py       会话「跑完没有 / 卡在什么上」的扫描器
+lib/monitor.mjs       状态监控：45 秒一拍、去重、推 IM
+lib/asks.mjs          「等待你决定」的提问记录（回填用），asks.json
+lib/feishu-events.mjs 飞书长连接：卡片按钮点击 / 文字回复 → 回填会话选择
+tests/                smoke-bind（绑定）、smoke-client（槽注册）、smoke-rpc（预设+自动回传）、smoke-monitor（扫描器+监控状态）、smoke-answer（文字回复→回填）
 ```
 
 ## 开发
@@ -150,6 +190,8 @@ node --check client.js
 node tests/smoke-client.mjs     # 槽注册与组件可渲染
 node tests/smoke-rpc.mjs        # RPC / 预设 / 自动回传
 node tests/smoke-auto.mjs       # 自动回传的基线必须取到日志轮次（regression）
+node tests/smoke-restore.mjs    # 重启后把没等完的自动回传接回来（过期标 timeout）
+node tests/smoke-monitor.mjs    # 状态监控：卡住的提问能被识别并带选项，回答后不再报卡住
 node tests/smoke-bind.mjs       # 真实网络：生成飞书/微信二维码 + 错误路径
 ```
 

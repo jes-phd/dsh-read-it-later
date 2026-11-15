@@ -1,14 +1,17 @@
 {
   "name": "dsh-read-it-later",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "type": "module",
-  "description": "把每一轮对话发到飞书/微信：稍后读、预处理后自动发送、跨设备会话接力。",
+  "description": "把每一轮对话发到飞书 / 微信 / Telegram / Discord / 钉钉：稍后读、预处理后自动发送、跨设备会话接力。",
   "keywords": [
     "dsh",
     "dsh-plugin",
     "feishu",
     "weixin",
+    "telegram",
+    "discord",
+    "dingtalk",
     "share",
     "im"
   ],
@@ -36,6 +39,7 @@
     }
   },
   "dependencies": {
+    "@larksuiteoapi/node-sdk": "^1.76.0",
     "qrcode": "^1.5.4"
   },
   "license": "MIT",
