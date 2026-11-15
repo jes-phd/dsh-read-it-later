@@ -1,12 +1,14 @@
 // Host 侧入口：注册 /api/read-it-later RPC（绑定 + 发送），UI 在 client.js。
-import { mountRpc, restoreArms } from './lib/rpc.mjs';
-import { startMonitor } from './lib/monitor.mjs';
-import { startFeishuEvents, stopFeishuEvents } from './lib/feishu-events.mjs';
-
-// 必须声明 connection 依赖，才能访问 ctx.connection.fetch.register。
+// 说明：这里用带版本查询串的动态 import，避免插件热重载时命中 Node 的 ESM 模块缓存
+// （否则改过的 lib/*.mjs 还是老代码，很容易排出「明明改了却没生效」的怪现象）。
 export const inject = ['connection'];
 
-export function apply(ctx) {
+export async function apply(ctx) {
+  const bust = `?v=${Date.now()}`;
+  const { mountRpc, restoreArms } = await import(`./lib/rpc.mjs${bust}`);
+  const { startMonitor } = await import(`./lib/monitor.mjs${bust}`);
+  const { startFeishuEvents, stopFeishuEvents } = await import(`./lib/feishu-events.mjs${bust}`);
+
   mountRpc(ctx);
   // 把上次没等完的「预处理发送」接回来（Host 重启 / 升级后不至于白等一场）。
   void restoreArms(ctx).catch((error) => {

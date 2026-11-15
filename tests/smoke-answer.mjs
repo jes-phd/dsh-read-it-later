@@ -37,8 +37,8 @@ const ctx = {
   get(name) {
     if (name !== 'sessionController') return null;
     return {
-      async prompt(request) {
-        calls.push(request);
+      async prompt(request, signal) {
+        calls.push({ request, signal });
         return { accepted: true };
       },
     };
@@ -48,7 +48,8 @@ const ctx = {
 const said = await answerPending(ctx, { ...byNumber.ask, option: byNumber.option });
 assert.equal(said.ok, true);
 assert.equal(calls.length, 1);
-const request = calls[0];
+const { request, signal } = calls[0];
+assert.ok(signal && typeof signal.aborted === 'boolean', 'prompt 必须收到 AbortSignal');
 assert.equal(request.sessionId, 'session-abc');
 assert.equal(request.mode, 'steer');
 const payload = JSON.parse(request.content[0].text);
