@@ -248,6 +248,8 @@ window.__ModuleLoader__.load({
           setNote(`已发送${fmt} ${sent.textParts ?? 0} 条，文件 ${sent.filesSent ?? 0} 个 → ${value.bot?.name || platformLabel(value.bot?.platform)}`);
         } catch (e) {
           setError(errorText(e));
+          // 机器人可能在别处被解绑了：失败后刷新一下列表，别让下拉一直停在幽灵项上。
+          void refresh();
         } finally {
           setBusy(false);
         }
@@ -515,6 +517,7 @@ window.__ModuleLoader__.load({
       const [randomTheme, setRandomTheme] = useState(true);
       const [summarize, setSummarize] = useState(true);
       const [zipFiles, setZipFiles] = useState(true);
+      const [autoTimeoutMin, setAutoTimeoutMin] = useState(20);
       const [github, setGithub] = useState('');
       const [unlocked, setUnlocked] = useState(false);
 
@@ -547,6 +550,7 @@ window.__ModuleLoader__.load({
           setRandomTheme(value.randomTheme !== false);
           setSummarize(value.summarize !== false);
           setZipFiles(value.zip !== false);
+          setAutoTimeoutMin(Number.isFinite(value.autoTimeoutMin) ? value.autoTimeoutMin : 20);
           setGithub(value.github ?? '');
           setUnlocked(value.unlocked === true);
         } catch {}
@@ -567,6 +571,7 @@ window.__ModuleLoader__.load({
           setRandomTheme(value.randomTheme !== false);
           setSummarize(value.summarize !== false);
           setZipFiles(value.zip !== false);
+          setAutoTimeoutMin(Number.isFinite(value.autoTimeoutMin) ? value.autoTimeoutMin : 20);
           setUnlocked(value.unlocked === true);
           bump();
         } catch (e) {
@@ -813,7 +818,28 @@ window.__ModuleLoader__.load({
               h('div', { style: { display: 'grid', gap: 6 } },
                 check('摘要显示', summarize, (v) => applySettings({ summarize: v }), '勾选：只显示 100 字摘要 +「详情」折叠；不勾：直接全文铺在卡片里'),
                 check('压缩附件', zipFiles, (v) => applySettings({ zip: v }), '勾选：附件打成一个 zip；不勾：每个文件单独发'),
-                check('随机配色', randomTheme, (v) => applySettings({ randomTheme: v }), '按会话标题散列配色，每个会话尽量不同色（同一个会话颜色固定）')),
+                check('随机配色', randomTheme, (v) => applySettings({ randomTheme: v }), '按会话标题散列配色，每个会话尽量不同色（同一个会话颜色固定）'),
+                h('label', {
+                  style: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, flexWrap: 'wrap' },
+                  title: '预处理发送后最多等多久：超时会标成「等待结果超时」，不会无限挂着',
+                },
+                h('span', null, '自动回传等待'),
+                h('input', {
+                  type: 'number',
+                  min: 1,
+                  max: 180,
+                  value: autoTimeoutMin,
+                  style: {
+                    width: 64, padding: '3px 8px', borderRadius: 8, fontSize: 13,
+                    border: '1px solid var(--dsh-border, #d9d9d9)', background: 'var(--dsh-surface, #fff)', color: 'inherit',
+                  },
+                  onChange: (event) => setAutoTimeoutMin(Number(event.target.value) || 1),
+                  onBlur: () => applySettings({ autoTimeoutMin }),
+                  onKeyDown: (event) => {
+                    if (event.key === 'Enter') applySettings({ autoTimeoutMin });
+                  },
+                }),
+                h('span', { style: S.muted }, '分钟（1–180，默认 20；插件重启后仍在窗口内会接着等）'))),
               h('div', { style: S.muted }, randomTheme ? '配色：随机（每个会话按标题取色）' : '配色：固定（点下面的颜色切换）'),
               h('div', { style: { display: 'flex', gap: 8, flexWrap: 'wrap' } },
                 themes.map((t) => h('button', {

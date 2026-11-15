@@ -77,6 +77,7 @@ npm install --omit=dev
 | 压缩附件 `zip` | ✅ 开 | 所有附件打成一个 `<会话标题>第 N 轮.zip` | 像早期版本一样每个文件单独发 |
 | 随机配色 `randomTheme` | ✅ 开 | 按**会话标题**做 FNV-1a 散列取色：同一会话颜色固定，不同会话尽量不同色（飞书里一眼区分） | 用下面手动选的固定配色 |
 | 解锁 `unlocked` | ❌ 关 | 点开项目主页后置为 `true`，高级设置可改 | — |
+| 等待上限 `autoTimeoutMin` | 20 分钟 | 预处理发送后最多等这么久（1–180 可调）；超时会明确提示「等待结果超时，可以再点一次」，不会无限挂着 | — |
 
 | id | 名称 | 主色 | 飞书卡片 template |
 | --- | --- | --- | --- |
@@ -150,6 +151,7 @@ node --check client.js
 node tests/smoke-client.mjs     # 槽注册与组件可渲染
 node tests/smoke-rpc.mjs        # RPC / 预设 / 自动回传
 node tests/smoke-auto.mjs       # 自动回传的基线必须取到日志轮次（regression）
+node tests/smoke-restore.mjs    # 重启后把没等完的自动回传接回来（过期标 timeout）
 node tests/smoke-bind.mjs       # 真实网络：生成飞书/微信二维码 + 错误路径
 ```
 
