@@ -1,5 +1,7 @@
 # dsh-read-it-later
 
+**中文** · [English](README.en.md)
+
 > 把每一轮对话，变成你换设备时能接着读、接着干的东西。
 
 在会话的**每一轮结尾**点一下，就能把这一轮的**提示词、回复、附件**发到你自己绑定的机器人 —— 飞书、微信、Telegram、Discord、钉钉都行。
@@ -139,7 +141,7 @@ Host 注册 `POST /api/read-it-later`，客户端用 `connection.rpc.call('/api'
 应答 { type:'server-response', rpcId, result:{ ok:true, value } | { ok:false, error:{ code, message, details } } }
 ```
 
-方法：`status`、`bind.begin`、`bind.poll`、`bind.verify`、`bind.cancel`、`bind.manual`、`bot.remove`、`bot.rename`、`bot.test`、`share.preview`、`share.send`、`preset.list`、`preset.save`、`preset.delete`、`auto.arm`、`auto.status`、`auto.cancel`、`settings.get`（可带 `{sessionId}` 拿该会话的实际配色）、`settings.set`（`themeId` / `randomTheme` / `summarize` / `zip` 部分更新）。
+方法：`status`、`bind.begin`、`bind.poll`、`bind.verify`、`bind.cancel`、`bind.manual`、`bot.remove`、`bot.rename`、`bot.test`、`bot.default`、`share.preview`、`share.send`、`preset.list`、`preset.save`、`preset.delete`、`auto.arm`、`auto.status`、`auto.cancel`、`settings.get`（可带 `{sessionId}` 拿该会话的实际配色）、`settings.set`（`themeId` / `randomTheme` / `summarize` / `zip` 部分更新）。
 
 ### 状态监控
 
