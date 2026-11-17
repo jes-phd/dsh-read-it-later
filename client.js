@@ -16,16 +16,56 @@ window.__ModuleLoader__.load({
     };
 
     // 跟随 DSH 界面语言：非中文环境插件整体切英文（文案走 L(中文, English)）。
-    const UI_LANG = (() => {
+    // 主依据是 DSH 的 locale 服务（设置 → 通用 → 语言），因为 DSH 的静态 HTML 恒为 lang="en"，
+    // 只看 <html lang> 会把中文界面误判成英文。拿不到 locale 时才退回 html lang / navigator。
+    const normalizeLang = (value) => (String(value || '').toLowerCase().startsWith('zh') ? 'zh' : 'en');
+    let localeFace = null;
+    let UI_LANG = (() => {
       try {
         const html = typeof document !== 'undefined' ? document.documentElement?.getAttribute?.('lang') : '';
         const nav = typeof navigator !== 'undefined' ? navigator.language : '';
-        return String(html || nav || 'zh').toLowerCase().startsWith('zh') ? 'zh' : 'en';
+        return normalizeLang(html || nav || 'zh');
       } catch {
         return 'zh';
       }
     })();
+    const langListeners = new Set();
+    function onLangChange(fn) {
+      langListeners.add(fn);
+      return () => langListeners.delete(fn);
+    }
+    function detectLang() {
+      let active = '';
+      try {
+        active = localeFace?.getSnapshot?.()?.active || '';
+      } catch {}
+      if (!active) {
+        try {
+          active = document.documentElement?.getAttribute?.('lang') || '';
+        } catch {}
+      }
+      if (!active && typeof navigator !== 'undefined') active = navigator.language || '';
+      return normalizeLang(active || 'zh');
+    }
+    function syncLang() {
+      const next = detectLang();
+      if (next === UI_LANG) return UI_LANG;
+      UI_LANG = next;
+      for (const fn of [...langListeners]) {
+        try {
+          fn();
+        } catch {}
+      }
+      return UI_LANG;
+    }
     const L = (zh, en) => (UI_LANG === 'en' ? en : zh);
+
+    // 语言切换时让组件重渲染（DSH 的 locale 服务切换语言不会重挂插件）。
+    function useLang() {
+      const [, setTick] = useState(0);
+      useEffect(() => onLangChange(() => setTick((x) => x + 1)), []);
+      syncLang();
+    }
 
     const RPC_PATH = '/api/read-it-later';
     const RPC_ENDPOINT = 'read-it-later';
@@ -69,7 +109,7 @@ window.__ModuleLoader__.load({
 
     // 错误文案：RPC 返回的是「ril/xxx: 说明」，直接抛给用户太生硬。
     // 这里保留原文，但补一句「你该做什么」，并且对常见码换成更短的说法。
-    const ERROR_HINTS = {
+    const errorHints = () => ({
       'ril/no-bot': L('还没有绑定机器人：点右边「⚙ 绑定设置」，扫码绑定飞书或微信。', 'No bot yet: open “⚙ Bind & settings” on the right and scan to bind Feishu or WeChat.'),
       'ril/locked': L('高级设置先解锁：点开项目主页点个 Star，回来就能改。', 'Advanced settings are locked: star the project page, then come back.'),
       'ril/missing-session': L('拿不到会话 ID：刷新一下页面再试。', 'Cannot read the session id: refresh the page and retry.'),
@@ -81,14 +121,14 @@ window.__ModuleLoader__.load({
         '这台机器的 Python 缺少 zstandard 模块，读不了会话记录。在命令行跑一次 pip install zstandard 就好（命令见括号里的提示）。',
         'This machine’s Python is missing zstandard, so the session log cannot be read. Run “pip install zstandard” once (see the hint for the exact command).',
       ),
-    };
+    });
 
     function errorText(error) {
       const raw = String(error?.message ?? error ?? '');
       const m = /^(ril\/[a-z-]+):\s*([\s\S]*)$/.exec(raw);
       const code = m ? m[1] : '';
       const detail = m ? m[2].trim() : raw;
-      const hint = ERROR_HINTS[code];
+      const hint = errorHints()[code];
       if (!hint) return detail || raw || L('未知错误', 'Unknown error');
       if (!detail || detail === hint) return hint;
       return `${hint}（${detail}）`;
@@ -228,6 +268,7 @@ window.__ModuleLoader__.load({
 
     // ---------------- 每轮对话结尾的分享按钮 ----------------
     function ShareTurn(props) {
+      useLang();
       const { call } = props;
       const sessionIdRef = useRef(null);
       const rootRef = useRef(null);
@@ -598,6 +639,7 @@ window.__ModuleLoader__.load({
 
     // ---------------- 设置页：绑定管理 ----------------
     function SettingsPanel(props) {
+      useLang();
       const { call, compact, onChanged } = props;
       const [bots, setBots] = useState([]);
       const [defaultId, setDefaultId] = useState('');
@@ -1036,9 +1078,16 @@ window.__ModuleLoader__.load({
 
 
     return {
-      inject: ['slots', 'connection', 'sessions'],
+      inject: ['slots', 'connection', 'sessions', 'locale'],
       apply(ctx) {
         const call = makeCall(ctx);
+        try {
+          localeFace = ctx.locale ?? null;
+          syncLang();
+          localeFace?.subscribe?.(() => {
+            syncLang();
+          });
+        } catch {}
 
         const disposers = [];
         disposers.push(ctx.slots.inject('conversation.chat.turnTail', () => ctx.slots.register({

@@ -3,6 +3,13 @@
 本文件记录 `dsh-read-it-later` 的对外变化。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.2.2] - 2026-11-17
+
+### 修复
+- **中文 DSH 里界面却显示英文**：语言判断原来只看 `<html lang>`，而 DSH 的静态 HTML 恒为 `lang="en"`（真正的中文在前端挂载后才写进 `<html lang>`），插件在模块加载时就定死成英文。
+  现在读 DSH 的 **`locale` 服务**（设置 → 通用 → 语言），并订阅语言变化、每次渲染重新判定；拿不到服务时才退回 `<html lang>` / `navigator.language`。`client.js` 的 `inject` 相应增加 `locale`。
+- 错误提示文案（`ERROR_HINTS`）改为按需生成，切换语言后立即跟随。
+
 ## [0.2.1] - 2026-11-17
 
 ### 修复
