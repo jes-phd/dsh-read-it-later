@@ -15,7 +15,7 @@ export async function apply(ctx) {
     console.warn('[read-it-later] restoreArms failed:', error?.message ?? error);
   });
   // 状态监控：盯所有会话的「完成一轮 / 卡在需要决定」，按设置往默认机器人推。
-  startMonitor();
+  startMonitor(ctx);
   // 飞书长连接：卡片按钮点选 / 直接回复数字，都能把选择回填到会话里。
   try {
     startFeishuEvents(ctx);

@@ -170,7 +170,8 @@ Host 注册 `POST /api/read-it-later`，客户端用 `connection.rpc.call('/api'
 index.js              Host 入口（inject: connection）
 client.js             浏览器侧：每轮按钮 + 设置页
 lib/rpc.mjs           /api/read-it-later 处理器、发送编排、auto 轮询
-lib/collect.mjs       取会话数据（sessionQuery 服务 / python 兜底）
+lib/collect.mjs       取会话数据（sessionQuery.readSession 纯 JS 解析，python 兜底）
+lib/extract.mjs       会话事件的纯 JS 解析（轮次 / 提示词 / 答复 / 文件 / 待决项）
 lib/card.mjs          飞书卡片 + 纯文本渲染
 lib/feishu.mjs        飞书 device registration、发消息、发文件
 lib/weixin.mjs        微信 iLink：二维码、轮询、发文本/文件
