@@ -1,6 +1,6 @@
 {
   "name": "dsh-read-it-later",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": false,
   "type": "module",
   "description": "把每一轮对话发到飞书 / 微信 / Telegram / Discord / 钉钉：稍后读、预处理后自动发送、跨设备会话接力。",
@@ -34,7 +34,8 @@
         "@deepseek-ai/dsh-client-ui-conversation",
         "@deepseek-ai/dsh-client-ui-settings",
         "@deepseek-ai/dsh-client-connection",
-        "@deepseek-ai/dsh-api-session-controller"
+        "@deepseek-ai/dsh-api-session-controller",
+        "@deepseek-ai/dsh-client-locale"
       ]
     }
   },
