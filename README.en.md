@@ -13,6 +13,8 @@
 One click at the **end of each turn** sends that turn's **prompt, reply and attachments** to a bot you bound yourself — Feishu, WeChat, Telegram, Discord or DingTalk.
 It is not built for collaboration, it is built for **you**: standing up, commuting, switching computers — the content is already there.
 
+![One click and this turn lands on your phone](assets/demo.gif)
+
 ![Read it later: send this turn to your phone](assets/illus-later.png)
 
 ## 1. Read it later
