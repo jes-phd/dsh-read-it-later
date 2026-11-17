@@ -3,6 +3,14 @@
 本文件记录 `dsh-read-it-later` 的对外变化。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.2.3] - 2026-11-17
+
+### 修复
+- **没有 Python 的机器也能读会话**：新增 `lib/logzstd.mjs`，自己按 zstd 帧魔数切开多帧会话日志、逐帧解压（Node 自带的 `zlib.zstdDecompressSync` 只吃单帧，这是之前必须依赖 Python 的根因）。
+  现在采集顺序是 ① `sessionQuery.readSession()` ② 直接读落盘日志（纯 JS） ③ Python 兜底，三选一成功即可。
+- 三层都失败时，错误信息会带上每层失败的原因，不再只丢一句 `share-extract failed`。
+- 状态监控同样加了「直接读日志」这一层（`scanViaRawLog`）。
+
 ## [0.2.2] - 2026-11-17
 
 ### 修复
