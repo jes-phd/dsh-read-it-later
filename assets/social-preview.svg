@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7fbff"/>
+      <stop offset="55%" stop-color="#fdfaf6"/>
+      <stop offset="100%" stop-color="#f6f8ff"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2f6df6"/>
+      <stop offset="100%" stop-color="#5b8bff"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <circle cx="1120" cy="90" r="150" fill="#e8f0ff" opacity="0.55"/>
+  <circle cx="150" cy="560" r="120" fill="#fdeee2" opacity="0.5"/>
+
+  <!-- 左侧：咖啡杯图标 -->
+  <g transform="translate(96 168)">
+    <circle cx="96" cy="96" r="96" fill="#fdefe0"/>
+    <path d="M64 74 q-10 -18 0 -32" stroke="#d9bfa6" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M96 66 q-10 -20 0 -34" stroke="#d9bfa6" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M128 74 q-10 -18 0 -32" stroke="#d9bfa6" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M44 96 h88 v34 a18 18 0 0 1 -18 18 h-52 a18 18 0 0 1 -18 -18 z" fill="#ffffff" stroke="#c9a887" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M132 104 h14 a14 14 0 0 1 0 28 h-14" fill="none" stroke="#c9a887" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="88" cy="96" rx="44" ry="9" fill="#a9744f"/>
+    <circle cx="72" cy="122" r="4" fill="#5b4636"/>
+    <circle cx="104" cy="122" r="4" fill="#5b4636"/>
+    <path d="M74 132 q14 12 28 0" stroke="#5b4636" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="60" cy="132" r="6" fill="#f6b6b6" opacity="0.9"/>
+    <circle cx="116" cy="132" r="6" fill="#f6b6b6" opacity="0.9"/>
+  </g>
+
+  <!-- 右侧：标题 -->
+  <text x="316" y="214" font-family="'Inter','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" font-size="66" font-weight="700" fill="#1a2230">Read it later</text>
+  <rect x="318" y="238" width="96" height="8" rx="4" fill="url(#accent)"/>
+  <text x="316" y="300" font-family="'Inter','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" font-size="30" fill="#3b4759">把每一轮对话发到你自己的 IM 机器人</text>
+  <text x="316" y="344" font-family="'Inter','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" font-size="24" fill="#6b7788">Send every DSH turn to your own bot — read later, auto-send, resume anywhere</text>
+
+  <!-- 平台 chips -->
+  <g font-family="'Inter','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" font-size="21" fill="#2b3648">
+    <rect x="316" y="386" width="128" height="46" rx="23" fill="#eef3ff" stroke="#cfdcfb"/>
+    <text x="346" y="417">飞书</text>
+    <rect x="456" y="386" width="128" height="46" rx="23" fill="#eefaf1" stroke="#c9ecd6"/>
+    <text x="486" y="417">微信</text>
+    <rect x="596" y="386" width="150" height="46" rx="23" fill="#eef6ff" stroke="#c9def7"/>
+    <text x="626" y="417">Telegram</text>
+    <rect x="758" y="386" width="140" height="46" rx="23" fill="#f1f0ff" stroke="#d6d4fb"/>
+    <text x="788" y="417">Discord</text>
+    <rect x="910" y="386" width="120" height="46" rx="23" fill="#fff5ec" stroke="#f6ddc4"/>
+    <text x="940" y="417">钉钉</text>
+  </g>
+
+  <!-- 三个卖点 -->
+  <g font-family="'Inter','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" font-size="21" fill="#4a5668">
+    <text x="316" y="486">① 稍后读 · ② 预处理后自动发送 · ③ 跨设备会话接力</text>
+    <text x="316" y="524" font-size="19" fill="#7a8698">DSH 插件 · 每轮对话底部一个按钮 · 免费开源 (MIT)</text>
+  </g>
+
+  <rect x="316" y="556" width="212" height="44" rx="22" fill="#1a2230"/>
+  <text x="346" y="585" font-family="'Inter','Segoe UI',sans-serif" font-size="20" fill="#ffffff">github.com/jes-phd</text>
+</svg>

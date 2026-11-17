@@ -52,5 +52,29 @@
   "homepage": "https://github.com/jes-phd/dsh-read-it-later#readme",
   "bugs": {
     "url": "https://github.com/jes-phd/dsh-read-it-later/issues"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "lib/",
+    "assets/illus-*.png",
+    "assets/coffee-cup.png",
+    "assets/social-preview.png",
+    "share-extract.py",
+    "zip-files.py",
+    "monitor-scan.py",
+    "README.md",
+    "README.en.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "test": "node tests/smoke-client.mjs && node tests/smoke-rpc.mjs && node tests/smoke-log.mjs",
+    "prepublishOnly": "node tests/smoke-client.mjs"
   }
 }
