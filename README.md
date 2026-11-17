@@ -2,6 +2,12 @@
 
 **中文** · [English](README.en.md)
 
+[![release](https://img.shields.io/github/v/release/jes-phd/dsh-read-it-later?label=release&color=2f6df6)](https://github.com/jes-phd/dsh-read-it-later/releases)
+[![license](https://img.shields.io/github/license/jes-phd/dsh-read-it-later?color=2f6df6)](LICENSE)
+[![stars](https://img.shields.io/github/stars/jes-phd/dsh-read-it-later?style=flat&color=2f6df6)](https://github.com/jes-phd/dsh-read-it-later/stargazers)
+[![DeepSeek Harness](https://img.shields.io/badge/DeepSeek%20Harness-plugin-1a2230)](https://github.com/jes-phd/dsh-read-it-later)
+[![platforms](https://img.shields.io/badge/IM-%E9%A3%9E%E4%B9%A6%20%7C%20%E5%BE%AE%E4%BF%A1%20%7C%20Telegram%20%7C%20Discord%20%7C%20%E9%92%89%E9%92%89-0f9d76)](#%E7%BB%91%E5%AE%9A)
+
 > 把每一轮对话，变成你换设备时能接着读、接着干的东西。
 
 在会话的**每一轮结尾**点一下，就能把这一轮的**提示词、回复、附件**发到你自己绑定的机器人 —— 飞书、微信、Telegram、Discord、钉钉都行。

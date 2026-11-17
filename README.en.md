@@ -2,6 +2,12 @@
 
 [中文](README.md) · **English**
 
+[![release](https://img.shields.io/github/v/release/jes-phd/dsh-read-it-later?label=release&color=2f6df6)](https://github.com/jes-phd/dsh-read-it-later/releases)
+[![license](https://img.shields.io/github/license/jes-phd/dsh-read-it-later?color=2f6df6)](LICENSE)
+[![stars](https://img.shields.io/github/stars/jes-phd/dsh-read-it-later?style=flat&color=2f6df6)](https://github.com/jes-phd/dsh-read-it-later/stargazers)
+[![DeepSeek Harness](https://img.shields.io/badge/DeepSeek%20Harness-plugin-1a2230)](https://github.com/jes-phd/dsh-read-it-later)
+[![platforms](https://img.shields.io/badge/IM-Feishu%20%7C%20WeChat%20%7C%20Telegram%20%7C%20Discord%20%7C%20DingTalk-0f9d76)](#binding)
+
 > Turn every conversation turn into something you can pick up and keep going with on another device.
 
 One click at the **end of each turn** sends that turn's **prompt, reply and attachments** to a bot you bound yourself — Feishu, WeChat, Telegram, Discord or DingTalk.
