@@ -77,6 +77,10 @@ window.__ModuleLoader__.load({
       'ril/no-turns': L('这个会话还没有跑完过一轮，先聊一轮再点「预处理发送」。', 'This session has no finished turn yet — send one message first.'),
       'ril/no-preset': L('没有找到这条预设，可能已被删除。', 'That preset no longer exists.'),
       'ril/bad-request': L('请求参数不对，刷新页面再试。', 'Bad request: refresh the page and retry.'),
+      'ril/py-missing': L(
+        '这台机器的 Python 缺少 zstandard 模块，读不了会话记录。在命令行跑一次 pip install zstandard 就好（命令见括号里的提示）。',
+        'This machine’s Python is missing zstandard, so the session log cannot be read. Run “pip install zstandard” once (see the hint for the exact command).',
+      ),
     };
 
     function errorText(error) {

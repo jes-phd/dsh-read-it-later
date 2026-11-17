@@ -3,6 +3,14 @@
 本文件记录 `dsh-read-it-later` 的对外变化。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.2.1] - 2026-11-17
+
+### 修复
+- **不再需要 Python / zstandard**：会话解析改走 Host 的 `sessionQuery.readSession()`（返回完整事件数组，与落盘日志同构），新增 `lib/extract.mjs` 做纯 JS 解析；`share-extract.py` 降级为兜底。此前在没装 `zstandard` 的机器上会报 `ModuleNotFoundError: No module named 'zstandard'`。
+- Python 兜底路径会逐个候选解释器探测 `import zstandard`，全部不可用时给出可操作提示（附具体 `pip install zstandard` 命令）。
+- 状态监控同样走纯 JS 解析（`scanSession`），不再依赖 `monitor-scan.py`。
+
+
 ## [0.2.0] - 2026-11-16
 
 ### 新增
